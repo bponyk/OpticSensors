@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpticSensorApp", "OpticSensorApp\OpticSensorApp.vcxproj", "{03D618D2-BC88-4FF6-84DC-C15CBD14EEA8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F0BC004B-EBB3-42EC-962E-70F1C96CA83B} = {F0BC004B-EBB3-42EC-962E-70F1C96CA83B}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpticSensorLib", "OpticSensorLib\OpticSensorLib.vcxproj", "{F0BC004B-EBB3-42EC-962E-70F1C96CA83B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpticSensorTest", "OpticSensorTest\OpticSensorTest.vcxproj", "{2EF314E3-4A07-44CA-9E86-E303B72E4D3D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F0BC004B-EBB3-42EC-962E-70F1C96CA83B} = {F0BC004B-EBB3-42EC-962E-70F1C96CA83B}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{03D618D2-BC88-4FF6-84DC-C15CBD14EEA8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{03D618D2-BC88-4FF6-84DC-C15CBD14EEA8}.Debug|Win32.Build.0 = Debug|Win32
+		{03D618D2-BC88-4FF6-84DC-C15CBD14EEA8}.Release|Win32.ActiveCfg = Release|Win32
+		{03D618D2-BC88-4FF6-84DC-C15CBD14EEA8}.Release|Win32.Build.0 = Release|Win32
+		{F0BC004B-EBB3-42EC-962E-70F1C96CA83B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F0BC004B-EBB3-42EC-962E-70F1C96CA83B}.Debug|Win32.Build.0 = Debug|Win32
+		{F0BC004B-EBB3-42EC-962E-70F1C96CA83B}.Release|Win32.ActiveCfg = Release|Win32
+		{F0BC004B-EBB3-42EC-962E-70F1C96CA83B}.Release|Win32.Build.0 = Release|Win32
+		{2EF314E3-4A07-44CA-9E86-E303B72E4D3D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2EF314E3-4A07-44CA-9E86-E303B72E4D3D}.Debug|Win32.Build.0 = Debug|Win32
+		{2EF314E3-4A07-44CA-9E86-E303B72E4D3D}.Release|Win32.ActiveCfg = Release|Win32
+		{2EF314E3-4A07-44CA-9E86-E303B72E4D3D}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
