@@ -98,7 +98,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Controller.h" />
     <ClInclude Include="FreeType.h" />
+    <ClInclude Include="IObject.h" />
+    <ClInclude Include="IObjectFactory.h" />
     <ClInclude Include="IRenderer.h" />
     <ClInclude Include="OpenGL_Renderer.h" />
     <ClInclude Include="OpticSensorLibAPI.h" />
@@ -107,6 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Controller.cpp" />
     <ClCompile Include="FreeType.cpp" />
     <ClCompile Include="OpenGL_Renderer.cpp" />
     <ClCompile Include="stdafx.cpp">
