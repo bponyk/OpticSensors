@@ -1,9 +1,12 @@
 #include "stdafx.h"
 
 #include "Application.h"
+#include "OpenGL_Renderer.h"
 
 #include <GL/glew.h>
 #include <GL/wglew.h>			// Header File For The OpenGL32 Library
+
+#include <cassert>
 
 namespace
 {
@@ -88,9 +91,9 @@ void Application::Start(const std::wstring& i_title, size_t i_width, size_t i_he
 
 	// Create Our OpenGL Window
 	if (_Create(i_title, i_width, i_height, i_bits, i_full_screen) == FALSE)
-	{
 		return;										// Quit If Window Was Not Created
-	}
+
+	assert (mp_renderer);
 
 	while(m_active)								// Loop That Runs While done=FALSE
 	{
@@ -109,7 +112,7 @@ void Application::Start(const std::wstring& i_title, size_t i_width, size_t i_he
 		else
 		{
 			//draw scene if we are active now
-			DrawScene();					// Draw The Scene
+			mp_renderer->RenderScene();
 			SwapBuffers(m_hDC);				// Swap Buffers (Double Buffering)
 		}
 	}
@@ -133,7 +136,7 @@ BOOL Application::_Create(const std::wstring& i_title, size_t i_width, size_t i_
 	WindowRect.top=(long)0;				// Set Top Value To 0
 	WindowRect.bottom=(long)i_height;	// Set Bottom Value To Requested i_height
 
-	m_fullscreen=i_full_screen;			// Set The Global Fullscreen Flag
+	m_fullscreen = i_full_screen;			// Set The Global Fullscreen Flag
 
 	m_hInstance			= GetModuleHandle(NULL);				// Grab An Instance For Our Window
 	wc.style			= CS_HREDRAW | CS_VREDRAW | CS_OWNDC;	// Redraw On Size, And Own DC For Window.
@@ -214,60 +217,12 @@ BOOL Application::_Create(const std::wstring& i_title, size_t i_width, size_t i_
 		return FALSE;								// Return FALSE
 	}
 
-	static	PIXELFORMATDESCRIPTOR pfd=				// pfd Tells Windows How We Want Things To Be
-	{
-		sizeof(PIXELFORMATDESCRIPTOR),				// Size Of This Pixel Format Descriptor
-		1,											// Version Number
-		PFD_DRAW_TO_WINDOW |						// Format Must Support Window
-		PFD_SUPPORT_OPENGL |						// Format Must Support OpenGL
-		PFD_DOUBLEBUFFER,							// Must Support Double Buffering
-		PFD_TYPE_RGBA,								// Request An RGBA Format
-		i_bits,										// Select Our Color Depth
-		0, 0, 0, 0, 0, 0,							// Color Bits Ignored
-		0,											// No Alpha Buffer
-		0,											// Shift Bit Ignored
-		0,											// No Accumulation Buffer
-		0, 0, 0, 0,									// Accumulation Bits Ignored
-		16,											// 16Bit Z-Buffer (Depth Buffer)  
-		0,											// No Stencil Buffer
-		0,											// No Auxiliary Buffer
-		PFD_MAIN_PLANE,								// Main Drawing Layer
-		0,											// Reserved
-		0, 0, 0										// Layer Masks Ignored
-	};
+	
 	
 	if (!(m_hDC=GetDC(m_hWnd)))						// Did We Get A Device Context?
 	{
-		_ReleaseWindow();								// Reset The Display
-		MessageBox(NULL, L"Can't Create A GL Device Context.", L"ERROR",MB_OK|MB_ICONEXCLAMATION);
-		return FALSE;								// Return FALSE
-	}
-
-	if (!(PixelFormat=ChoosePixelFormat(m_hDC,&pfd)))	// Did Windows Find A Matching Pixel Format?
-	{
-		_ReleaseWindow();								// Reset The Display
-		MessageBox(NULL,L"Can't Find A Suitable PixelFormat.",L"ERROR",MB_OK|MB_ICONEXCLAMATION);
-		return FALSE;								// Return FALSE
-	}
-
-	if(!SetPixelFormat(m_hDC,PixelFormat,&pfd))		// Are We Able To Set The Pixel Format?
-	{
-		_ReleaseWindow();								// Reset The Display
-		MessageBox(NULL,L"Can't Set The PixelFormat.",L"ERROR",MB_OK|MB_ICONEXCLAMATION);
-		return FALSE;								// Return FALSE
-	}
-
-	if (!(m_hRC=wglCreateContext(m_hDC)))				// Are We Able To Get A Rendering Context?
-	{
-		_ReleaseWindow();								// Reset The Display
-		MessageBox(NULL,L"Can't Create A GL Rendering Context.",L"ERROR",MB_OK|MB_ICONEXCLAMATION);
-		return FALSE;								// Return FALSE
-	}
-
-	if(!wglMakeCurrent(m_hDC,m_hRC))				// Try To Activate The Rendering Context
-	{
 		_ReleaseWindow();							// Reset The Display
-		MessageBox(NULL,L"Can't Activate The GL Rendering Context.",L"ERROR",MB_OK|MB_ICONEXCLAMATION);
+		MessageBox(NULL, L"Can't Create A GL Device Context.", L"ERROR",MB_OK|MB_ICONEXCLAMATION);
 		return FALSE;								// Return FALSE
 	}
 
@@ -275,8 +230,10 @@ BOOL Application::_Create(const std::wstring& i_title, size_t i_width, size_t i_
 	SetForegroundWindow(m_hWnd);					// Slightly Higher Priority
 	SetFocus(m_hWnd);								// Sets Keyboard Focus To The Window
 	OnResize(i_width, i_height);					// Set Up Our Perspective GL Screen
+	
+	mp_renderer.reset(new OpenGL_Renderer(m_hWnd, m_hDC));
 
-	if (!_InitGL())									// Initialize Our Newly Created GL Window
+	if (!mp_renderer->Initialize())									// Initialize Our Newly Created GL Window
 	{
 		_ReleaseWindow();								// Reset The Display
 		MessageBox(NULL,L"Initialization Failed.",L"ERROR",MB_OK|MB_ICONEXCLAMATION);
@@ -295,21 +252,14 @@ void Application::Destroy()
 
 void Application::OnResize(int i_width, int i_height)
 {
+	if (!mp_renderer)
+		return;
 	if (i_height == 0)									// Prevent A Divide By Zero By
 	{
 		i_height = 1;									// Making Height Equal One
 	}
 
-	glViewport(0, 0, i_width, i_height);				// Reset The Current Viewport
-
-	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-	glLoadIdentity();									// Reset The Projection Matrix
-
-	// Calculate The Aspect Ratio Of The Window
-	gluPerspective(45.0f, static_cast<float>(i_width)/static_cast<float>(i_height), 0.1f, 100.0f);
-
-	glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-	glLoadIdentity();									// Reset The Modelview Matrix
+	mp_renderer->Reshape(i_width, i_height);
 }
 
 void Application::OnActivate(BOOL i_value)
@@ -340,15 +290,8 @@ void Application::_ReleaseWindow()
 
 	if (m_hRC)											// Do We Have A Rendering Context?
 	{
-		if (!wglMakeCurrent(NULL,NULL))					// Are We Able To Release The DC And RC Contexts?
-		{
-			MessageBox(NULL,L"Release Of DC And RC Failed.",L"SHUTDOWN ERROR", MB_OK | MB_ICONINFORMATION);
-		}
-
-		if (!wglDeleteContext(m_hRC))						// Are We Able To Delete The RC?
-		{
-			MessageBox(NULL,L"Release Rendering Context Failed.",L"SHUTDOWN ERROR", MB_OK | MB_ICONINFORMATION);
-		}
+		if (mp_renderer)
+			mp_renderer->Release();
 		m_hRC=NULL;										// Set RC To NULL
 	}
 
@@ -369,22 +312,4 @@ void Application::_ReleaseWindow()
 		MessageBox(NULL,L"Could Not Unregister Class.",L"SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
 		m_hInstance=NULL;									// Set hInstance To NULL
 	}
-}
-
-int Application::_InitGL()
-{
-	glShadeModel(GL_SMOOTH);							// Enable Smooth Shading
-	glClearColor(0.0f, 0.0f, 0.0f, 0.5f);				// Black Background
-	glClearDepth(1.0f);									// Depth Buffer Setup
-	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
-	glDepthFunc(GL_LEQUAL);								// The Type Of Depth Testing To Do
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	// Really Nice Perspective Calculations
-	return TRUE;										// Initialization Went OK
-}
-
-void Application::DrawScene()							// Here's Where We Do All The Drawing
-{
-	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// Clear Screen And Depth Buffer
-	glLoadIdentity();									// Reset The Current Modelview Matrix
 }

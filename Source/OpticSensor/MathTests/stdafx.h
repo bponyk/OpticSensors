@@ -7,14 +7,10 @@
 
 #include "targetver.h"
 
-#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
+#include <stdio.h>
+#include <tchar.h>
+
+#include <gtest/gtest.h>
 
 
-#include <string>
-
-#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
-
-#include <Windows.h>
-
-#define _CRT_SECURE_NO_DEPRECATE
 // TODO: reference additional headers your program requires here

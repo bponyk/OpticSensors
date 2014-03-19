@@ -4,6 +4,8 @@
 
 #include <string>
 
+class IRenderer;
+
 class Application
 {
 private:
@@ -15,11 +17,11 @@ private:
 
 	static std::unique_ptr<Application>	mg_instance;
 	bool								m_active;
+	std::unique_ptr<IRenderer>			mp_renderer;
 private:
 	Application();
 
 	void				_ReleaseWindow();
-	int					_InitGL();
 
 	BOOL				_Create(const std::wstring& i_title, size_t i_width, size_t i_height, int i_bits, bool i_full_screen);
 public:
@@ -30,8 +32,6 @@ public:
 	void				OnActivate(BOOL i_value);
 	void				OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	void				OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
-
-	void				DrawScene();
 
 	static Application& GetInstance();
 };

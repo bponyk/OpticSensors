@@ -10,14 +10,14 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
                      _In_ LPTSTR    lpCmdLine,
                      _In_ int       nCmdShow)
 {
-	/*bool fullscreen = FALSE;
+	bool fullscreen = FALSE;
 
 	// Ask The User Which Screen Mode They Prefer
 	if (MessageBox(NULL,L"Would You Like To Run In Fullscreen Mode?", L"Start FullScreen?",MB_YESNO|MB_ICONQUESTION) == IDNO)
 	{
 		fullscreen=FALSE;							// Windowed Mode
-	}*/
-	Application::GetInstance().Start(L"Optic sensor", 640, 480, 16, false);
+	}
+	Application::GetInstance().Start(L"Optic sensor", 640, 480, 16, fullscreen);
 	return 0;
 }
 
