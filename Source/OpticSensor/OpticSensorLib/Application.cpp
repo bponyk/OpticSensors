@@ -1,12 +1,14 @@
 #include "stdafx.h"
 
 #include "Application.h"
+#include "Controller.h"
 #include "OpenGL_Renderer.h"
 
 #include <GL/glew.h>
-#include <GL/wglew.h>			// Header File For The OpenGL32 Library
+#include <GL/wglew.h>
 
 #include <cassert>
+#include <functional>
 
 namespace
 {
@@ -95,6 +97,7 @@ void Application::Start(const std::wstring& i_title, size_t i_width, size_t i_he
 
 	assert (mp_renderer);
 
+
 	while(m_active)								// Loop That Runs While done=FALSE
 	{
 		if (PeekMessage(&msg,NULL,0,0,PM_REMOVE))	// Is There A Message Waiting?
@@ -112,6 +115,8 @@ void Application::Start(const std::wstring& i_title, size_t i_width, size_t i_he
 		else
 		{
 			//draw scene if we are active now
+			std::function<void()> draw_function = std::bind(&Controller::RenderObjects, mp_controller.get());
+			mp_renderer->SetDrawSceneFunction(draw_function);
 			mp_renderer->RenderScene();
 			SwapBuffers(m_hDC);				// Swap Buffers (Double Buffering)
 		}
@@ -226,11 +231,6 @@ BOOL Application::_Create(const std::wstring& i_title, size_t i_width, size_t i_
 		return FALSE;								// Return FALSE
 	}
 
-	ShowWindow(m_hWnd,SW_SHOW);						// Show The Window
-	SetForegroundWindow(m_hWnd);					// Slightly Higher Priority
-	SetFocus(m_hWnd);								// Sets Keyboard Focus To The Window
-	OnResize(i_width, i_height);					// Set Up Our Perspective GL Screen
-	
 	mp_renderer.reset(new OpenGL_Renderer(m_hWnd, m_hDC));
 
 	if (!mp_renderer->Initialize())									// Initialize Our Newly Created GL Window
@@ -239,6 +239,16 @@ BOOL Application::_Create(const std::wstring& i_title, size_t i_width, size_t i_
 		MessageBox(NULL,L"Initialization Failed.",L"ERROR",MB_OK|MB_ICONEXCLAMATION);
 		return FALSE;								// Return FALSE
 	}
+
+	ShowWindow(m_hWnd,SW_SHOW);						// Show The Window
+	SetForegroundWindow(m_hWnd);					// Slightly Higher Priority
+	SetFocus(m_hWnd);								// Sets Keyboard Focus To The Window
+	OnResize(i_width, i_height);					// Set Up Our Perspective GL Screen
+
+	mp_controller.reset(new Controller);
+	std::function<void()> draw_function = std::bind(&Controller::RenderObjects, mp_controller.get());
+	mp_renderer->SetDrawSceneFunction(draw_function);
+
 	m_active = true;
 	return TRUE;									// Success
 }
@@ -246,6 +256,11 @@ BOOL Application::_Create(const std::wstring& i_title, size_t i_width, size_t i_
 void Application::Destroy()
 {
 	_ReleaseWindow();
+}
+
+IRenderer& Application::GetRenderer()
+{
+	return *mp_renderer;
 }
 
 ///////////////////////////////////////////////////////////////

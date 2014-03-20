@@ -5,6 +5,7 @@
 #include <string>
 
 class IRenderer;
+class Controller;
 
 class Application
 {
@@ -18,12 +19,15 @@ private:
 	static std::unique_ptr<Application>	mg_instance;
 	bool								m_active;
 	std::unique_ptr<IRenderer>			mp_renderer;
+	std::unique_ptr<Controller>			mp_controller;
+
 private:
 	Application();
 
 	void				_ReleaseWindow();
 
 	BOOL				_Create(const std::wstring& i_title, size_t i_width, size_t i_height, int i_bits, bool i_full_screen);
+
 public:
 	void				Start(const std::wstring& i_title, size_t i_width, size_t i_height, int i_bits, bool i_full_screen);
 	void				Destroy();
@@ -32,6 +36,8 @@ public:
 	void				OnActivate(BOOL i_value);
 	void				OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	void				OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
+
+	IRenderer&			GetRenderer();
 
 	static Application& GetInstance();
 };

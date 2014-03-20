@@ -3,6 +3,7 @@
 #include "Controller.h"
 #include "IObject.h"
 #include "IObjectFactory.h"
+#include "Box.h"
 
 #include <algorithm> 
 #include <exception>
@@ -16,6 +17,10 @@ namespace
 			std::unique_ptr<IObject> object;
 			switch(i_type)
 			{
+			case ObjectType::OT_BOX:
+				object.reset(new Box(Vector3D(10,10,0), 10, 10));
+				break;
+
 			default:
 				return nullptr;
 			};
@@ -38,7 +43,7 @@ namespace
 Controller::Controller()
 	: m_factory(new DefaultObjectFactory())
 {
-
+	AddObject(ObjectType::OT_BOX);
 }
 
 Controller::~Controller()
