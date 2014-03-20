@@ -119,6 +119,7 @@ void Application::Start(const std::wstring& i_title, size_t i_width, size_t i_he
 		{
 			//draw scene if we are active now
 			mp_renderer->RenderScene();
+			mp_controller->UpdateObjects();
 		}
 	}
 
@@ -249,6 +250,8 @@ BOOL Application::_Create(const std::wstring& i_title, size_t i_width, size_t i_
 	mp_box->AccessCenter() = Vector3D(320, 450, 0);
 	mp_box->AccessWidth() = 50;
 	mp_box->AccessHeight() = 50;
+
+	mp_controller->AddObject(ObjectType::OT_SENSOR);
 
 	std::function<void()> draw_function = std::bind(&Controller::RenderObjects, mp_controller.get());
 	mp_renderer->SetDrawSceneFunction(draw_function);

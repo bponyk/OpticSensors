@@ -4,6 +4,8 @@
 #include "IObject.h"
 #include "IObjectFactory.h"
 #include "Box.h"
+#include "Sensor.h"
+#include "Ray.h"
 
 #include <algorithm> 
 #include <exception>
@@ -18,6 +20,12 @@ namespace
 			{
 			case ObjectType::OT_BOX:
 				return std::make_shared<Box>();
+
+			case ObjectType::OT_SENSOR:
+				return std::make_shared<Sensor>();
+
+			case ObjectType::OT_RAY:
+				return std::make_shared<Ray>();
 
 			default:
 				return nullptr;
