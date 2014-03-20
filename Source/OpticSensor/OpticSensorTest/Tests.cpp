@@ -16,9 +16,9 @@ public:
 class TestObjectFactory : public IObjectFactory
 {
 	public:
-		virtual std::unique_ptr<IObject> CreateObject(ObjectType i_type) override
+		virtual std::shared_ptr<IObject> CreateObject(ObjectType i_type) override
 		{
-			return std::unique_ptr<MockObject>(new MockObject);
+			return std::make_shared<MockObject>();
 		}
 };
 
@@ -41,8 +41,8 @@ TEST(Controller, UpdateObjects)
 {
 	Controller controller;
 	controller.SetObjectFactory(std::make_shared<TestObjectFactory>());
-	MockObject& object = static_cast<MockObject&>(controller.AddObject((ObjectType)255));
-	EXPECT_CALL(object, Update())
+	MockObject* object = static_cast<MockObject*>(controller.AddObject((ObjectType)255).get());
+	EXPECT_CALL(*object, Update())
 		.Times(1);
 
 	controller.UpdateObjects();
@@ -52,8 +52,8 @@ TEST(Controller, RenderObjects)
 {
 	Controller controller;
 	controller.SetObjectFactory(std::make_shared<TestObjectFactory>());
-	MockObject& object = static_cast<MockObject&>(controller.AddObject((ObjectType)255));
-	EXPECT_CALL(object, Render())
+	MockObject* object = static_cast<MockObject*>(controller.AddObject((ObjectType)255).get());
+	EXPECT_CALL(*object, Render())
 		.Times(1);
 
 	controller.RenderObjects();

@@ -6,6 +6,7 @@
 
 class IRenderer;
 class Controller;
+class Box;
 
 class Application
 {
@@ -20,6 +21,8 @@ private:
 	bool								m_active;
 	std::unique_ptr<IRenderer>			mp_renderer;
 	std::unique_ptr<Controller>			mp_controller;
+	
+	Box*					mp_box;
 
 private:
 	Application();

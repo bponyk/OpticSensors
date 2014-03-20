@@ -3,6 +3,8 @@
 #include "Application.h"
 #include "Controller.h"
 #include "OpenGL_Renderer.h"
+#include "IObject.h"
+#include "Box.h"
 
 #include <GL/glew.h>
 #include <GL/wglew.h>
@@ -77,6 +79,7 @@ Application::Application()
 	, m_hInstance(nullptr)
 	, m_hRC(nullptr)
 	, m_hWnd(nullptr)
+	, mp_box(nullptr)
 {
 }
 
@@ -115,10 +118,7 @@ void Application::Start(const std::wstring& i_title, size_t i_width, size_t i_he
 		else
 		{
 			//draw scene if we are active now
-			std::function<void()> draw_function = std::bind(&Controller::RenderObjects, mp_controller.get());
-			mp_renderer->SetDrawSceneFunction(draw_function);
 			mp_renderer->RenderScene();
-			SwapBuffers(m_hDC);				// Swap Buffers (Double Buffering)
 		}
 	}
 
@@ -131,7 +131,6 @@ void Application::Start(const std::wstring& i_title, size_t i_width, size_t i_he
 
 BOOL Application::_Create(const std::wstring& i_title, size_t i_width, size_t i_height, int i_bits, bool i_full_screen)
 {
-	GLuint		PixelFormat;			// Holds The Results After Searching For A Match
 	WNDCLASS	wc;						// Windows Class Structure
 	DWORD		dwExStyle;				// Window Extended Style
 	DWORD		dwStyle;				// Window Style
@@ -246,6 +245,11 @@ BOOL Application::_Create(const std::wstring& i_title, size_t i_width, size_t i_
 	OnResize(i_width, i_height);					// Set Up Our Perspective GL Screen
 
 	mp_controller.reset(new Controller);
+	mp_box = static_cast<Box*>(mp_controller->AddObject(ObjectType::OT_BOX).get());
+	mp_box->AccessCenter() = Vector3D(320, 450, 0);
+	mp_box->AccessWidth() = 50;
+	mp_box->AccessHeight() = 50;
+
 	std::function<void()> draw_function = std::bind(&Controller::RenderObjects, mp_controller.get());
 	mp_renderer->SetDrawSceneFunction(draw_function);
 
@@ -283,6 +287,30 @@ void Application::OnActivate(BOOL i_value)
 
 void Application::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
+	if (mp_box == nullptr)
+		return;
+	switch (nChar)
+	{
+	case 0x57: // W
+	case VK_UP:
+		mp_box->AccessCenter()[1] -= 5;
+		break;
+
+	case 0x41: // A
+	case VK_LEFT:
+		mp_box->AccessCenter()[0] -= 5;
+		break;
+
+	case 0x53: // S
+	case VK_DOWN:
+		mp_box->AccessCenter()[1] += 5;
+		break;
+
+	case 0x44: // D
+	case VK_RIGHT:
+		mp_box->AccessCenter()[0] += 5;
+		break;
+	}
 }
 
 void Application::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)

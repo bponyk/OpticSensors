@@ -12,38 +12,25 @@ namespace
 {
 	class DefaultObjectFactory : public IObjectFactory
 	{
-		virtual std::unique_ptr<IObject> CreateObject(ObjectType i_type) override
+		virtual std::shared_ptr<IObject> CreateObject(ObjectType i_type) override
 		{
-			std::unique_ptr<IObject> object;
 			switch(i_type)
 			{
 			case ObjectType::OT_BOX:
-				object.reset(new Box(Vector3D(10,10,0), 10, 10));
-				break;
+				return std::make_shared<Box>();
 
 			default:
 				return nullptr;
 			};
-			return std::move(object);
+			return nullptr;
 		}
 	};
-
-	void CallObjectUpdate(const std::unique_ptr<IObject>& object)
-	{
-		object->Update();
-	}
-
-	void CallObjectRender(const std::unique_ptr<IObject>& object)
-	{
-		object->Render();
-	}
 }
 
 
 Controller::Controller()
 	: m_factory(new DefaultObjectFactory())
 {
-	AddObject(ObjectType::OT_BOX);
 }
 
 Controller::~Controller()
@@ -55,20 +42,20 @@ void Controller::SetObjectFactory(std::shared_ptr<IObjectFactory> i_factory)
 	m_factory = i_factory;
 }
 
-IObject& Controller::AddObject(ObjectType i_type)
+std::shared_ptr<IObject> Controller::AddObject(ObjectType i_type)
 {
-	std::unique_ptr<IObject> object = m_factory->CreateObject(i_type);
+	std::shared_ptr<IObject> object = m_factory->CreateObject(i_type);
 	if (object)
 	{
-		m_objects.push_back(std::move(object));
-		return *m_objects.back().get();
+		m_objects.push_back(object);
+		return m_objects.back();
 	}
 	throw std::exception("Factory has not requested type");
 }
 
 void Controller::UpdateObjects()
 {
-	std::for_each(m_objects.begin(), m_objects.end(), [](const std::unique_ptr<IObject>& i_object)
+	std::for_each(m_objects.begin(), m_objects.end(), [](const std::shared_ptr<IObject>& i_object)
 		{
 			i_object->Update();
 	}); 
@@ -76,9 +63,8 @@ void Controller::UpdateObjects()
 
 void Controller::RenderObjects()
 {
-	std::for_each(m_objects.begin(), m_objects.end(), [](const std::unique_ptr<IObject>& i_object)
+	std::for_each(m_objects.begin(), m_objects.end(), [](const std::shared_ptr<IObject>& i_object)
 		{
 			i_object->Render();
 	}); 
 }
-

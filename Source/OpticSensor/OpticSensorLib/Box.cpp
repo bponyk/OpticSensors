@@ -29,3 +29,33 @@ void Box::Render()
 {
 	Application::GetInstance().GetRenderer().RenderRectangle(m_Center, m_size[0], m_size[1], Color(255, 255, 255, 255));
 }
+
+Vector3D Box::GetCenter() const
+{
+	return m_Center;
+}
+
+size_t	 Box::GetWidth() const
+{
+	return m_size[0];
+}
+
+size_t	 Box::GetHeight() const
+{
+	return m_size[1];
+}
+
+Vector3D& Box::AccessCenter()
+{
+	return m_Center;
+}
+
+size_t&	 Box::AccessWidth()
+{
+	return m_size[0];
+}
+
+size_t&	 Box::AccessHeight()
+{
+	return m_size[1];
+}

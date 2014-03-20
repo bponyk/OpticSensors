@@ -8,5 +8,5 @@ class IObjectFactory
 public:
 	virtual ~IObjectFactory(){}
 
-	virtual std::unique_ptr<IObject> CreateObject(ObjectType i_type) = 0;
+	virtual std::shared_ptr<IObject> CreateObject(ObjectType i_type) = 0;
 };
