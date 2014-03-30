@@ -21,6 +21,6 @@ public:
 	void						SetObjectFactory(std::shared_ptr<IObjectFactory> i_factory);
 	std::shared_ptr<IObject>	AddObject(ObjectType i_type);
 
-	void						UpdateObjects();
+	void						UpdateObjects(long i_elapsed_time);
 	void						RenderObjects();
 };

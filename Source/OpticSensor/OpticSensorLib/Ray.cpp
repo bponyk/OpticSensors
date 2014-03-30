@@ -15,7 +15,7 @@ Ray::~Ray()
 {
 }
 
-void Ray::Update()
+void Ray::Update(long i_elapsed_time)
 {
 }
 
@@ -25,4 +25,9 @@ void Ray::Render()
 
 	renderer.RenderLine(Vector3D(100, m_emitter_position,0), Vector3D(m_distanse, m_emitter_position, 0), Color(255, 0, 0, 255), 5.0F);
 
+}
+
+Box3D Ray::GetBBox() const
+{
+	return Box3D();
 }

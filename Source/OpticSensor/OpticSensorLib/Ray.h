@@ -16,6 +16,7 @@ public:
 	void SetEmitterPosition(const Vector3D& i_position);
 	void SetDetectorPosition(const Vector3D& i_position);
 
-	virtual void Update() override;
+	virtual void Update(long i_elpsed_time) override;
 	virtual void Render() override;
+	Box3D GetBBox() const override;
 };

@@ -161,6 +161,7 @@ BOOL OpenGL_Renderer::Initialize()
   glLoadIdentity();
   glMatrixMode(GL_MODELVIEW);
   _InitFreeType(m_font_data);
+  return TRUE;
   }
 
 void OpenGL_Renderer::Release()
@@ -236,14 +237,14 @@ void OpenGL_Renderer::RenderText(const Vector3D& i_position, const std::wstring&
   {
   GLColor color = i_color.Convert<GLColor>();
   glColor4f(color[0], color[1], color[2], color[3]);
-  freetype::print(m_font_data, i_position.GetX(), m_height - i_position.GetY(), "%s", i_text);
+  freetype::print(m_font_data, static_cast<float>(i_position.GetX()), static_cast<float>(m_height - i_position.GetY()), "%s", i_text);
   }
 
 void OpenGL_Renderer::RenderText(const Vector3D& i_position, const std::string& i_text, Color i_color)
   {
   GLColor color = i_color.Convert<GLColor>();
   glColor4f(color[0], color[1], color[2], color[3]);
-  freetype::print(m_font_data, i_position.GetX(), m_height - i_position.GetY(), "%s", i_text.c_str());
+  freetype::print(m_font_data, static_cast<float>(i_position.GetX()), static_cast<float>(m_height - i_position.GetY()), "%s", i_text.c_str());
   }
 
 void OpenGL_Renderer::RenderScene()
@@ -256,3 +257,4 @@ void OpenGL_Renderer::RenderScene()
   glFinish();
   SwapBuffers(wglGetCurrentDC());
   }
+

@@ -9,8 +9,9 @@
 class MockObject : public IObject
 {
 public:
-	MOCK_METHOD0(Update, void());
+	MOCK_METHOD1(Update, void(long));
 	MOCK_METHOD0(Render, void());
+	MOCK_CONST_METHOD0(GetBBox, Box3D());
 };
 
 class TestObjectFactory : public IObjectFactory
@@ -42,10 +43,10 @@ TEST(Controller, UpdateObjects)
 	Controller controller;
 	controller.SetObjectFactory(std::make_shared<TestObjectFactory>());
 	MockObject* object = static_cast<MockObject*>(controller.AddObject((ObjectType)255).get());
-	EXPECT_CALL(*object, Update())
+	EXPECT_CALL(*object, Update(0))
 		.Times(1);
 
-	controller.UpdateObjects();
+	controller.UpdateObjects(0);
 }
 
 TEST(Controller, RenderObjects)

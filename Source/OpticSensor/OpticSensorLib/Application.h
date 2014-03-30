@@ -40,7 +40,14 @@ public:
 	void				OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	void				OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
 
+	inline HWND			GetHWND() const;
+
 	IRenderer&			GetRenderer();
 
 	static Application& GetInstance();
 };
+
+HWND Application::GetHWND() const
+{
+	return m_hWnd;
+}

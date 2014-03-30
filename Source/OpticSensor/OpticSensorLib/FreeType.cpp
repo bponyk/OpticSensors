@@ -8,6 +8,8 @@
 //Include our header file.
 #include "freetype.h"
 
+#pragma warning (disable : 4244)
+
 namespace freetype {
 
 ///This function gets the first power of 2 >= the
@@ -297,7 +299,7 @@ void print(const font_data &ft_font, float x, float y, const char *fmt, ...)  {
 	//down by h. This is because when each character is
 	//draw it modifies the current matrix so that the next character
 	//will be drawn immediatly after it.  
-	for(int i=0;i<lines.size();i++) {
+	for(size_t i=0;i<lines.size();i++) {
 		
 
 		glPushMatrix();

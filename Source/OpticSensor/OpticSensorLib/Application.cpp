@@ -11,6 +11,7 @@
 
 #include <cassert>
 #include <functional>
+#include <time.h>
 
 namespace
 {
@@ -100,7 +101,8 @@ void Application::Start(const std::wstring& i_title, size_t i_width, size_t i_he
 
 	assert (mp_renderer);
 
-
+	clock_t previous_time = clock();
+	
 	while(m_active)								// Loop That Runs While done=FALSE
 	{
 		if (PeekMessage(&msg,NULL,0,0,PM_REMOVE))	// Is There A Message Waiting?
@@ -117,9 +119,12 @@ void Application::Start(const std::wstring& i_title, size_t i_width, size_t i_he
 		}
 		else
 		{
+			mp_controller->UpdateObjects(clock() - previous_time);
+
 			//draw scene if we are active now
 			mp_renderer->RenderScene();
-			mp_controller->UpdateObjects();
+
+			previous_time = clock();
 		}
 	}
 
@@ -251,7 +256,8 @@ BOOL Application::_Create(const std::wstring& i_title, size_t i_width, size_t i_
 	mp_box->AccessWidth() = 50;
 	mp_box->AccessHeight() = 50;
 
-	mp_controller->AddObject(ObjectType::OT_SENSOR);
+	mp_controller->AddObject(ObjectType::OT_EMITTER);
+	mp_controller->AddObject(ObjectType::OT_DETECTOR);
 
 	std::function<void()> draw_function = std::bind(&Controller::RenderObjects, mp_controller.get());
 	mp_renderer->SetDrawSceneFunction(draw_function);

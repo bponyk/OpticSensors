@@ -4,7 +4,8 @@
 #include "IObject.h"
 #include "IObjectFactory.h"
 #include "Box.h"
-#include "Sensor.h"
+#include "Emitter.h"
+#include "Detector.h"
 #include "Ray.h"
 
 #include <algorithm> 
@@ -21,8 +22,11 @@ namespace
 			case ObjectType::OT_BOX:
 				return std::make_shared<Box>();
 
-			case ObjectType::OT_SENSOR:
-				return std::make_shared<Sensor>();
+			case ObjectType::OT_EMITTER:
+				return std::make_shared<Emitter>();
+
+			case ObjectType::OT_DETECTOR:
+				return std::make_shared<Detector>();
 
 			case ObjectType::OT_RAY:
 				return std::make_shared<Ray>();
@@ -61,11 +65,11 @@ std::shared_ptr<IObject> Controller::AddObject(ObjectType i_type)
 	throw std::exception("Factory has not requested type");
 }
 
-void Controller::UpdateObjects()
+void Controller::UpdateObjects(long i_elapsed_time)
 {
-	std::for_each(m_objects.begin(), m_objects.end(), [](const std::shared_ptr<IObject>& i_object)
+	std::for_each(m_objects.begin(), m_objects.end(), [i_elapsed_time](const std::shared_ptr<IObject>& i_object)
 		{
-			i_object->Update();
+			i_object->Update(i_elapsed_time);
 	}); 
 }
 

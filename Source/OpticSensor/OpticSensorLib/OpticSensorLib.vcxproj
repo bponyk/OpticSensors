@@ -106,6 +106,8 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Controller.h" />
+    <ClInclude Include="Detector.h" />
+    <ClInclude Include="Emitter.h" />
     <ClInclude Include="FreeType.h" />
     <ClInclude Include="IObject.h" />
     <ClInclude Include="IObjectFactory.h" />
@@ -113,7 +115,6 @@
     <ClInclude Include="OpenGL_Renderer.h" />
     <ClInclude Include="OpticSensorLibAPI.h" />
     <ClInclude Include="Ray.h" />
-    <ClInclude Include="Sensor.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -121,10 +122,11 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="Detector.cpp" />
+    <ClCompile Include="Emitter.cpp" />
     <ClCompile Include="FreeType.cpp" />
     <ClCompile Include="OpenGL_Renderer.cpp" />
     <ClCompile Include="Ray.cpp" />
-    <ClCompile Include="Sensor.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
