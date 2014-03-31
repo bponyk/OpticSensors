@@ -119,12 +119,13 @@ void Application::Start(const std::wstring& i_title, size_t i_width, size_t i_he
 		}
 		else
 		{
-			mp_controller->UpdateObjects(clock() - previous_time);
-
 			//draw scene if we are active now
 			mp_renderer->RenderScene();
 
-			previous_time = clock();
+      mp_controller->UpdateObjects(clock() - previous_time);
+      previous_time = clock();
+
+      ::Sleep(10);
 		}
 	}
 

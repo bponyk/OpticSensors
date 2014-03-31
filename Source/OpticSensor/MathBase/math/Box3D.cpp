@@ -81,6 +81,16 @@ Vector3D Box3D::GetSize() const
     m_max[2] - m_min[2]);
   }
 
+void Box3D::SetMin(const Vector3D& i_point)
+  {
+  m_min = i_point;
+  }
+
+void Box3D::SetMax(const Vector3D& i_point)
+  {
+  m_max = i_point;
+  }
+
 namespace Utilities
   {
   std::vector<Vector3D> ParseVectors(const std::vector<Vector3D>& i_vectors, const Box3D& i_box)

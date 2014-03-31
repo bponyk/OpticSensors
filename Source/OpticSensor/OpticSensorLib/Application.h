@@ -42,12 +42,20 @@ public:
 
 	inline HWND			GetHWND() const;
 
-	IRenderer&			GetRenderer();
+	IRenderer&			        GetRenderer();
+  inline Controller&      GetController();
 
 	static Application& GetInstance();
 };
+
+//////////////////////////////////////////////////////////////////////////
 
 HWND Application::GetHWND() const
 {
 	return m_hWnd;
 }
+
+Controller& Application::GetController()
+  {
+  return *mp_controller.get();
+  }

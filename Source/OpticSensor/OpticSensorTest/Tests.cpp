@@ -12,6 +12,7 @@ public:
 	MOCK_METHOD1(Update, void(long));
 	MOCK_METHOD0(Render, void());
 	MOCK_CONST_METHOD0(GetBBox, Box3D());
+  MOCK_METHOD1(CollisionDetected,void(const std::set<std::shared_ptr<IObject>>& i_objects));
 };
 
 class TestObjectFactory : public IObjectFactory

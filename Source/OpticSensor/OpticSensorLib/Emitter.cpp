@@ -1,10 +1,15 @@
 #include "stdafx.h"
 
-#include "Emitter.h"
 #include "Application.h"
+#include "Controller.h"
+#include "Emitter.h"
 #include "IRenderer.h"
+#include "Ray.h"
+
+const long DELTA_TIME = 100;
 
 Emitter::Emitter()
+  : m_elapsed_time(0)
 {
 	RECT rect;
 	::GetClientRect(Application::GetInstance().GetHWND(), &rect);
@@ -32,7 +37,12 @@ Emitter::~Emitter()
 
 void Emitter::Update(long i_elpsed_time)
 {
-	SendRay();
+  m_elapsed_time += i_elpsed_time;
+  if (m_elapsed_time >= DELTA_TIME)
+    {
+    SendRay();
+    m_elapsed_time = 0;
+    }
 }
 
 void Emitter::Render()
@@ -50,4 +60,12 @@ Box3D Emitter::GetBBox() const
 
 void Emitter::SendRay()
 {
+  Ray& ray = static_cast<Ray&>(*Application::GetInstance().GetController().AddObject(ObjectType::OT_RAY).get());
+  ray.SetStartPoint(Vector3D(m_emitter_center[0] + m_emitter_radius + 1, m_emitter_center[1], 0));
+  ray.SetDirection(Vector3D(1,0,0));
 }
+
+void Emitter::CollisionDetected(const std::set<std::shared_ptr<IObject>>& i_objects)
+  {
+
+  }

@@ -59,18 +59,34 @@ std::shared_ptr<IObject> Controller::AddObject(ObjectType i_type)
 	std::shared_ptr<IObject> object = m_factory->CreateObject(i_type);
 	if (object)
 	{
-		m_objects.push_back(object);
-		return m_objects.back();
+		m_new_objects.push_back(object);
+		return m_new_objects.back();
 	}
 	throw std::exception("Factory has not requested type");
 }
 
 void Controller::UpdateObjects(long i_elapsed_time)
 {
+  auto it_end = std::remove_if(m_objects.begin(), m_objects.end(), [](ObjectPtr i_object)
+    {
+    return i_object->ToDelete();
+    });
+
+  if (it_end != m_objects.end())
+    m_objects.erase(it_end, m_objects.end());
+
 	std::for_each(m_objects.begin(), m_objects.end(), [i_elapsed_time](const std::shared_ptr<IObject>& i_object)
 		{
 			i_object->Update(i_elapsed_time);
-	}); 
+	  }); 
+
+  while (!m_new_objects.empty())
+    {
+    m_objects.push_back(m_new_objects.back());
+    m_new_objects.pop_back();
+    }
+
+  m_collision_manager.Update();
 }
 
 void Controller::RenderObjects()
@@ -80,3 +96,8 @@ void Controller::RenderObjects()
 			i_object->Render();
 	}); 
 }
+
+std::vector<ObjectPtr>& Controller::GetObjects()
+  {
+  return m_objects;
+  }

@@ -28,5 +28,6 @@ public:
 	size_t&			AccessWidth();
 	size_t&			AccessHeight();
 
-	Box3D GetBBox() const override;
+	Box3D       GetBBox() const override;
+  void        CollisionDetected(const std::set<std::shared_ptr<IObject>>& i_objects) override;
 };

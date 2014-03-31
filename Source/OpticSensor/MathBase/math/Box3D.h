@@ -13,6 +13,8 @@ class Box3D
     bool      FullyContains(const Box3D& i_box) const;
     double    Distance(const Vector3D& i_point) const;
     double    DistanceSq(const Vector3D& i_point) const;
+    void      SetMin(const Vector3D& i_point);
+    void      SetMax(const Vector3D& i_point);
     Vector3D  GetMin() const;
     Vector3D  GetMax() const;
     Vector3D  GetSize() const;

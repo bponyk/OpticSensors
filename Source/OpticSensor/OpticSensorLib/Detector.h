@@ -26,8 +26,9 @@ private:
 	DetectorState	m_detector_state;
 
 	std::unique_ptr<Box3D>		mp_bbox;
+  long m_elapsed_time;
 
-	void	DetectRay();
+	void	ProcessState();
 
 public:
 	Detector();
@@ -36,4 +37,5 @@ public:
 	void Update(long i_elpsed_time) override;
 	void Render() override;
 	Box3D GetBBox() const override;
+  void  CollisionDetected(const std::set<std::shared_ptr<IObject>>& i_objects) override;
 };

@@ -22,11 +22,6 @@ Box::Box(const Vector3D& i_center, size_t i_width, size_t i_height)
 {
 	m_size[0] = i_width;
 	m_size[1] = i_height;
-
-	Vector3D min_vec(i_center[0] - m_size[0]/2, i_center[1] - m_size[1]/2, 0);
-	Vector3D max_vec(i_center[0] + m_size[0]/2, i_center[1] + m_size[1]/2, 0);
-	
-	mp_bbox.reset(new Box3D(min_vec, max_vec));
 }
 
 Box::~Box()
@@ -35,6 +30,11 @@ Box::~Box()
 
 void Box::Update(long i_elpsed_time)
 {
+  Vector3D min_vec(m_Center[0] - m_size[0]/2, m_Center[1] - m_size[1]/2, 0);
+  Vector3D max_vec(m_Center[0] + m_size[0]/2, m_Center[1] + m_size[1]/2, 0);
+
+  mp_bbox->SetMin(min_vec);
+  mp_bbox->SetMax(max_vec);
 }
 
 void Box::Render()
@@ -76,3 +76,8 @@ size_t&	 Box::AccessHeight()
 {
 	return m_size[1];
 }
+
+void Box::CollisionDetected(const std::set<std::shared_ptr<IObject>>& i_objects)
+  {
+
+  }
